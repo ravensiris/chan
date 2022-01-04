@@ -1,0 +1,75 @@
+#+TITLE: Project development
+
+* What is this?
+
+This document will have all the plans and documentation for the project.
+
+Using Emacs with Org mode strongly advised.
+
+* TODO Running the project
+
+For now there is nothing much in the project so just run:
+
+#+begin_src shell
+php -S localhost:8000 -t public
+#+end_src
+
+Later database and configuration file setup will appear here.
+
+* Project minimum
+
+Here we will go over the minimum working functionality expected in the *next* master branch merge.
+You can read *next* as *current* if you're reading this in the master branch.
+Read this document on develop branch for upcoming changes.
+
+Basically everything will be described here.
+
+** Boards
+*** Base model
+
+    | attribute   | type   | example                              |
+    |-------------+--------+--------------------------------------|
+    | id          | uuidv4 | eb6f2aa2-b9a7-4239-a89c-8d2cef484dae |
+    | name        | text   | technology                           |
+    | shorthand   | text   | t                                    |
+    | description | text   | /t/ - Technology                     |
+
+In json format:
+
+#+begin_src json
+{
+    "id": "eb6f2aa2-b9a7-4239-a89c-8d2cef484dae",
+    "name": "technology",
+    "shorthand": "t",
+    "description": "/t/ - Technology"
+}
+#+end_src
+
+*** Endpoints
+**** List all boards
+
+Request format:
+
+#+begin_src http
+GET localhost:8000/boards/
+Accept: application/json
+#+end_src
+
+Response json:
+
+#+begin_src json
+[
+    {
+        "id": "eb6f2aa2-b9a7-4239-a89c-8d2cef484dae",
+        "name": "technology",
+        "shorthand": "t",
+        "description": "/t/ - Technology"
+    },
+    {
+        "id": "7510a583-ba79-4796-a7c0-6866319e9e87",
+        "name": "video games",
+        "shorthand": "vg",
+        "description": "/vg/ - Video games"
+    },
+]
+#+end_src
