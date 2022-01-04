@@ -27,12 +27,12 @@ Basically everything will be described here.
 ** Boards
 *** Base model
 
-    | attribute   | type   | example                              |
-    |-------------+--------+--------------------------------------|
-    | id          | uuidv4 | eb6f2aa2-b9a7-4239-a89c-8d2cef484dae |
-    | name        | text   | technology                           |
-    | shorthand   | text   | t                                    |
-    | description | text   | /t/ - Technology                     |
+    | attribute   | type   | example                              | extra   |
+    |-------------+--------+--------------------------------------+---------|
+    | id          | uuidv4 | eb6f2aa2-b9a7-4239-a89c-8d2cef484dae |         |
+    | name        | text   | technology                           | unique  |
+    | shorthand   | text   | t                                    | unique  |
+    | description | text   | /t/ - Technology                     | virtual |
 
 In json format:
 
