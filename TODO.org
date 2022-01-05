@@ -98,7 +98,7 @@ Basically everything will be described here.
     | attribute   | type   | example                              | extra   |
     |-------------+--------+--------------------------------------+---------|
     | id          | uuidv4 | eb6f2aa2-b9a7-4239-a89c-8d2cef484dae |         |
-    | name        | text   | technology                           | unique  |
+    | name        | text   | Technology                           | unique  |
     | shorthand   | text   | t                                    | unique  |
     | description | text   | /t/ - Technology                     | virtual |
 
@@ -107,7 +107,7 @@ In json format:
 #+begin_src json
 {
     "id": "eb6f2aa2-b9a7-4239-a89c-8d2cef484dae",
-    "name": "technology",
+    "name": "Technology",
     "shorthand": "t",
     "description": "/t/ - Technology"
 }
@@ -143,7 +143,7 @@ Example response json:
 [
     {
         "id": "eb6f2aa2-b9a7-4239-a89c-8d2cef484dae",
-        "name": "technology",
+        "name": "Technology",
         "shorthand": "t",
         "description": "/t/ - Technology"
     },
@@ -154,4 +154,24 @@ Example response json:
         "description": "/vg/ - Video games"
     },
 ]
+#+end_src
+
+**** Show single board
+
+Request format:
+
+#+begin_src http
+GET localhost:8000/boards/eb6f2aa2-b9a7-4239-a89c-8d2cef484dae
+Accept: application/json
+#+end_src
+
+Example response json:
+
+#+begin_src json
+{
+    "id": "eb6f2aa2-b9a7-4239-a89c-8d2cef484dae",
+    "name": "Technology",
+    "shorthand": "t",
+    "description": "/t/ - Technology"
+}
 #+end_src
