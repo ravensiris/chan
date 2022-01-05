@@ -55,7 +55,21 @@ GET localhost:8000/boards/
 Accept: application/json
 #+end_src
 
-Response json:
+#+RESULTS:
+#+begin_example
+HTTP/1.1 200 OK
+Host: localhost:8000
+Date: Wed, 05 Jan 2022 16:54:50 GMT
+Connection: close
+X-Powered-By: PHP/8.0.14
+Cache-Control: no-cache, private
+Date: Wed, 05 Jan 2022 16:54:50 GMT
+Content-Type: application/json
+
+[{"id":"c0849eda-be50-4c4e-8249-ddba738d776e","name":"Technology","shorthand":"g","description":"\/g\/ - Technology"}]
+#+end_example
+
+Example response json:
 
 #+begin_src json
 [
