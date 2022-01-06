@@ -12,6 +12,7 @@ class BoardFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => $this->faker->uuid,
             'name' => $this->faker->name,
             'shorthand' => $this->faker->unique()->randomLetter()
         ];
