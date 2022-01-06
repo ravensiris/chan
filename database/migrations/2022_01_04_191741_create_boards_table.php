@@ -14,7 +14,7 @@ class CreateBoardsTable extends Migration
     public function up()
     {
         Schema::create('boards', function (Blueprint $table) {
-            $table->uuid('id');
+            $table->uuid('id')->primary();
             $table->text('name')->unique();
             $table->text('shorthand')->unique();
             // description generated from name and shorthand in model
