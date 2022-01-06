@@ -304,8 +304,8 @@ Example response json:
     | id         | uuidv4   | 1592fe29-bddb-4279-b47d-bb41e23a67a0 |                                             |
     | board_id   | uuidv4   | eb6f2aa2-b9a7-4239-a89c-8d2cef484dae |                                             |
     | op_id      | uuidv4   | c96ffb89-028a-4546-8f47-24b40ca00671 | unused(NULL allowed) until replies are done |
-    | created_at | datetime | TODO                                 |                                             |
-    | updated_at | datetime | TODO                                 | update at each message posted               |
+    | created_at | datetime | 2022-01-06T21:01:24.000000Z          |                                             |
+    | updated_at | datetime | 2022-01-06T21:01:24.000000Z          | update at each message posted               |
 
    In json format:
 
@@ -314,8 +314,8 @@ Example response json:
     "id": "1592fe29-bddb-4279-b47d-bb41e23a67a0",
     "board_id": "eb6f2aa2-b9a7-4239-a89c-8d2cef484dae",
     "op_id": "c96ffb89-028a-4546-8f47-24b40ca00671",
-    "created_at": "TODO",
-    "updated_at": "TODO"
+    "created_at": "2022-01-06T21:01:24.000000Z",
+    "updated_at": "2022-01-06T21:01:24.000000Z"
 }
    #+end_src
 *** Endpoints
@@ -335,15 +335,15 @@ Example response json:
         "id": "1592fe29-bddb-4279-b47d-bb41e23a67a0",
         "board_id": "eb6f2aa2-b9a7-4239-a89c-8d2cef484dae",
         "op_id": "c96ffb89-028a-4546-8f47-24b40ca00671",
-        "created_at": "TODO",
-        "updated_at": "TODO"
+        "created_at": "2022-01-06T21:01:24.000000",
+        "updated_at": "2022-01-06T21:01:24.000000"
     },
     {
         "id": "caa794c0-5938-4e05-b4b7-662f6485d858",
         "board_id": "eb6f2aa2-b9a7-4239-a89c-8d2cef484dae",
         "op_id": "fd658530-c576-4414-97ef-2e81371aede4",
-        "created_at": "TODO",
-        "updated_at": "TODO"
+        "created_at": "2022-01-06T21:01:24.000000",
+        "updated_at": "2022-01-06T21:01:24.000000"
     },
 ]
 #+end_src
