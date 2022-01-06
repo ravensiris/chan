@@ -20,7 +20,6 @@ class Handler extends ExceptionHandler
         AuthorizationException::class,
         HttpException::class,
         ModelNotFoundException::class,
-        ValidationException::class,
     ];
 
     /**
@@ -49,6 +48,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if ($exception instanceof ValidationException) {
+            return $exception->response;
+        }
+
         return parent::render($request, $exception);
     }
 }
