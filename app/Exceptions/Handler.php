@@ -19,7 +19,6 @@ class Handler extends ExceptionHandler
     protected $dontReport = [
         AuthorizationException::class,
         HttpException::class,
-        ModelNotFoundException::class,
     ];
 
     /**
@@ -50,6 +49,23 @@ class Handler extends ExceptionHandler
     {
         if ($exception instanceof ValidationException) {
             return $exception->response;
+        }
+
+        if ($exception instanceof ModelNotFoundException) {
+
+            $error_data = ['error' => [
+                'errors' =>
+                [
+                    [
+                        'domain' => 'global',
+                        'reason' => 'notFound',
+                        'message' => 'Not Found',
+                    ]
+                ],
+                'code' => 404,
+                'message' => 'Not Found'
+            ]];
+            return response()->json($error_data, 404);
         }
 
         return parent::render($request, $exception);

@@ -3,6 +3,7 @@
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use App\Models\Board;
+use Ramsey\Uuid\Uuid;
 
 class BoardTest extends TestCase
 {
@@ -28,8 +29,6 @@ class BoardTest extends TestCase
 
     public function testShowInvalidUuid()
     {
-        // TODO: After creating the error handler check if it makes sense
-        // to use such convoluted way of expressing errors
         $error_data = ['error' => [
             'errors' =>
             [
@@ -47,6 +46,28 @@ class BoardTest extends TestCase
 
         $response = $this->get("/boards/123");
         $response->assertResponseStatus(400);
+        $response->seeJsonEquals($error_data);
+    }
+
+    public function testShowNonExistent()
+    {
+        $uuid = Uuid::uuid4();
+
+        $error_data = ['error' => [
+            'errors' =>
+            [
+                [
+                    'domain' => 'global',
+                    'reason' => 'notFound',
+                    'message' => 'Not Found',
+                ]
+            ],
+            'code' => 404,
+            'message' => 'Not Found'
+        ]];
+
+        $response = $this->get("/boards/$uuid");
+        $response->assertResponseStatus(404);
         $response->seeJsonEquals($error_data);
     }
 }
