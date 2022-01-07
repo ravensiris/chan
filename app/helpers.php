@@ -8,6 +8,7 @@ enum Domain: string
 {
     case Global = 'global';
     case Board = 'board';
+    case Thread = 'thread';
 }
 
 enum Reason: string

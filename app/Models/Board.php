@@ -33,5 +33,10 @@ class Board extends ModelUuid
         return BoardFactory::new();
     }
 
+    public function threads()
+    {
+        return $this->hasMany(Thread::class);
+    }
+
     protected $appends = ['description'];
 }
