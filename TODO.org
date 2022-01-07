@@ -159,11 +159,11 @@ Accept: application/json
 #+begin_example
 HTTP/1.1 404 Not Found
 Host: localhost:8000
-Date: Thu, 06 Jan 2022 19:15:58 GMT
+Date: Fri, 07 Jan 2022 00:23:58 GMT
 Connection: close
 X-Powered-By: PHP/8.1.1
 Cache-Control: no-cache, private
-Date: Thu, 06 Jan 2022 19:15:58 GMT
+Date: Fri, 07 Jan 2022 00:23:58 GMT
 Content-Type: application/json
 
 {"error":{"errors":[{"domain":"global","reason":"notFound","message":"Not Found"}],"code":404,"message":"Not Found"}}
@@ -202,11 +202,11 @@ Accept: application/json
 #+begin_example
 HTTP/1.1 400 Bad Request
 Host: localhost:8000
-Date: Thu, 06 Jan 2022 19:17:37 GMT
+Date: Fri, 07 Jan 2022 00:24:10 GMT
 Connection: close
 X-Powered-By: PHP/8.1.1
 Cache-Control: no-cache, private
-Date: Thu, 06 Jan 2022 19:17:37 GMT
+Date: Fri, 07 Jan 2022 00:24:10 GMT
 Content-Type: application/json
 
 {"error":{"errors":[{"domain":"board","reason":"invalidUuid","message":"`123` is not a valid UUIDv4.","locationType":"path","location":"\/boards\/"}],"code":400,"message":"`123` is not a valid UUIDv4."}}
@@ -217,19 +217,19 @@ Content-Type: application/json
 
     | attribute   | type   | example                              | extra   |
     |-------------+--------+--------------------------------------+---------|
-    | id          | uuidv4 | eb6f2aa2-b9a7-4239-a89c-8d2cef484dae |         |
+    | id          | uuidv4 | 0bb3abb9-986c-47a3-9a1c-c61e67d506f2 |         |
     | name        | text   | Technology                           | unique  |
-    | shorthand   | text   | t                                    | unique  |
-    | description | text   | /t/ - Technology                     | virtual |
+    | shorthand   | text   | g                                    | unique  |
+    | description | text   | /g/ - Technology                     | virtual |
 
 In json format:
 
 #+begin_src json
 {
-    "id": "eb6f2aa2-b9a7-4239-a89c-8d2cef484dae",
+    "id": "0bb3abb9-986c-47a3-9a1c-c61e67d506f2",
     "name": "Technology",
-    "shorthand": "t",
-    "description": "/t/ - Technology"
+    "shorthand": "g",
+    "description": "/g/ - Technology"
 }
 #+end_src
 
@@ -247,32 +247,32 @@ Accept: application/json
 #+begin_example
 HTTP/1.1 200 OK
 Host: localhost:8000
-Date: Wed, 05 Jan 2022 16:54:50 GMT
+Date: Fri, 07 Jan 2022 00:24:21 GMT
 Connection: close
-X-Powered-By: PHP/8.0.14
+X-Powered-By: PHP/8.1.1
 Cache-Control: no-cache, private
-Date: Wed, 05 Jan 2022 16:54:50 GMT
+Date: Fri, 07 Jan 2022 00:24:21 GMT
 Content-Type: application/json
 
-[{"id":"c0849eda-be50-4c4e-8249-ddba738d776e","name":"Technology","shorthand":"g","description":"\/g\/ - Technology"}]
+[{"id":"0bb3abb9-986c-47a3-9a1c-c61e67d506f2","name":"Technology","shorthand":"g","description":"\/g\/ - Technology"},{"id":"db86fdc5-edfd-43ae-bc59-199262fa6f8c","name":"Science","shorthand":"sci","description":"\/sci\/ - Science"}]
 #+end_example
 
 Example response json:
 
 #+begin_src json
 [
-    {
-        "id": "eb6f2aa2-b9a7-4239-a89c-8d2cef484dae",
-        "name": "Technology",
-        "shorthand": "t",
-        "description": "/t/ - Technology"
-    },
-    {
-        "id": "7510a583-ba79-4796-a7c0-6866319e9e87",
-        "name": "video games",
-        "shorthand": "vg",
-        "description": "/vg/ - Video games"
-    },
+  {
+    "id": "0bb3abb9-986c-47a3-9a1c-c61e67d506f2",
+    "name": "Technology",
+    "shorthand": "g",
+    "description": "/g/ - Technology"
+  },
+  {
+    "id": "db86fdc5-edfd-43ae-bc59-199262fa6f8c",
+    "name": "Science",
+    "shorthand": "sci",
+    "description": "/sci/ - Science"
+  }
 ]
 #+end_src
 
@@ -281,18 +281,32 @@ Example response json:
 Request format:
 
 #+begin_src http
-GET localhost:8000/boards/eb6f2aa2-b9a7-4239-a89c-8d2cef484dae
+GET localhost:8000/boards/0bb3abb9-986c-47a3-9a1c-c61e67d506f2
 Accept: application/json
 #+end_src
+
+#+RESULTS:
+#+begin_example
+HTTP/1.1 200 OK
+Host: localhost:8000
+Date: Fri, 07 Jan 2022 00:53:52 GMT
+Connection: close
+X-Powered-By: PHP/8.1.1
+Cache-Control: no-cache, private
+Date: Fri, 07 Jan 2022 00:53:52 GMT
+Content-Type: application/json
+
+{"id":"0bb3abb9-986c-47a3-9a1c-c61e67d506f2","name":"Technology","shorthand":"g","description":"\/g\/ - Technology"}
+#+end_example
 
 Example response json:
 
 #+begin_src json
 {
-    "id": "eb6f2aa2-b9a7-4239-a89c-8d2cef484dae",
-    "name": "Technology",
-    "shorthand": "t",
-    "description": "/t/ - Technology"
+  "id": "0bb3abb9-986c-47a3-9a1c-c61e67d506f2",
+  "name": "Technology",
+  "shorthand": "g",
+  "description": "/g/ - Technology"
 }
 #+end_src
 
@@ -310,14 +324,15 @@ Example response json:
    In json format:
 
    #+begin_src json
-{
-    "id": "1592fe29-bddb-4279-b47d-bb41e23a67a0",
-    "board_id": "eb6f2aa2-b9a7-4239-a89c-8d2cef484dae",
-    "op_id": "c96ffb89-028a-4546-8f47-24b40ca00671",
-    "created_at": "2022-01-06T21:01:24.000000Z",
-    "updated_at": "2022-01-06T21:01:24.000000Z"
-}
+   {
+      "id": "f13c22ad-02db-474c-b70a-d400cab11760",
+      "board_id": "db86fdc5-edfd-43ae-bc59-199262fa6f8c",
+      "op_id": null,
+      "created_at": "2022-01-01T00:05:30.000000Z",
+      "updated_at": "2022-01-01T00:05:00.000000Z"
+   }
    #+end_src
+
 *** Endpoints
 **** List threads per board
 
@@ -328,23 +343,44 @@ GET localhost:8000/boards/eb6f2aa2-b9a7-4239-a89c-8d2cef484dae/threads
 Accept: application/json
 #+end_src
 
+#+RESULTS:
+#+begin_example
+HTTP/1.1 200 OK
+Host: localhost:8000
+Date: Fri, 07 Jan 2022 00:52:13 GMT
+Connection: close
+X-Powered-By: PHP/8.1.1
+Cache-Control: no-cache, private
+Date: Fri, 07 Jan 2022 00:52:13 GMT
+Content-Type: application/json
+
+[{"id":"f13c22ad-02db-474c-b70a-d400cab11760","board_id":"db86fdc5-edfd-43ae-bc59-199262fa6f8c","op_id":null,"created_at":"2022-01-01T00:05:30.000000Z","updated_at":"2022-01-01T00:05:00.000000Z"},{"id":"005c8a09-482d-4622-9b06-db991982f450","board_id":"db86fdc5-edfd-43ae-bc59-199262fa6f8c","op_id":null,"created_at":"2022-01-01T00:04:30.000000Z","updated_at":"2022-01-01T00:04:00.000000Z"},{"id":"4a78d954-f872-48c9-8a7f-0d56677512e6","board_id":"db86fdc5-edfd-43ae-bc59-199262fa6f8c","op_id":null,"created_at":"2022-01-01T00:03:30.000000Z","updated_at":"2022-01-01T00:03:00.000000Z"}]
+#+end_example
+
 Example response json:
 #+begin_src json
 [
-    {
-        "id": "1592fe29-bddb-4279-b47d-bb41e23a67a0",
-        "board_id": "eb6f2aa2-b9a7-4239-a89c-8d2cef484dae",
-        "op_id": "c96ffb89-028a-4546-8f47-24b40ca00671",
-        "created_at": "2022-01-06T21:01:24.000000",
-        "updated_at": "2022-01-06T21:01:24.000000"
-    },
-    {
-        "id": "caa794c0-5938-4e05-b4b7-662f6485d858",
-        "board_id": "eb6f2aa2-b9a7-4239-a89c-8d2cef484dae",
-        "op_id": "fd658530-c576-4414-97ef-2e81371aede4",
-        "created_at": "2022-01-06T21:01:24.000000",
-        "updated_at": "2022-01-06T21:01:24.000000"
-    },
+  {
+    "id": "f13c22ad-02db-474c-b70a-d400cab11760",
+    "board_id": "db86fdc5-edfd-43ae-bc59-199262fa6f8c",
+    "op_id": null,
+    "created_at": "2022-01-01T00:05:30.000000Z",
+    "updated_at": "2022-01-01T00:05:00.000000Z"
+  },
+  {
+    "id": "005c8a09-482d-4622-9b06-db991982f450",
+    "board_id": "db86fdc5-edfd-43ae-bc59-199262fa6f8c",
+    "op_id": null,
+    "created_at": "2022-01-01T00:04:30.000000Z",
+    "updated_at": "2022-01-01T00:04:00.000000Z"
+  },
+  {
+    "id": "4a78d954-f872-48c9-8a7f-0d56677512e6",
+    "board_id": "db86fdc5-edfd-43ae-bc59-199262fa6f8c",
+    "op_id": null,
+    "created_at": "2022-01-01T00:03:30.000000Z",
+    "updated_at": "2022-01-01T00:03:00.000000Z"
+  }
 ]
 #+end_src
 
