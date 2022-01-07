@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Board;
-use Illuminate\Http\Request;
 
 class BoardController extends Controller
 {
@@ -14,8 +13,8 @@ class BoardController extends Controller
         return Board::all();
     }
 
-    public function show(Request $request, $id)
+    public function show($uuid)
     {
-        return Board::findOrFailUuid($id, $request);
+        return Board::findOrFailUuid($uuid);
     }
 }

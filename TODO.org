@@ -159,17 +159,22 @@ Accept: application/json
 #+begin_example
 HTTP/1.1 404 Not Found
 Host: localhost:8000
-Date: Fri, 07 Jan 2022 00:23:58 GMT
+Date: Fri, 07 Jan 2022 16:20:35 GMT
 Connection: close
 X-Powered-By: PHP/8.1.1
 Cache-Control: no-cache, private
-Date: Fri, 07 Jan 2022 00:23:58 GMT
+Date: Fri, 07 Jan 2022 16:20:35 GMT
 Content-Type: application/json
 
 {"error":{"errors":[{"domain":"global","reason":"notFound","message":"Not Found"}],"code":404,"message":"Not Found"}}
 #+end_example
 
 *** Invalid Uuid
+
+Location has a special format when locationType is `path`:
+
+- `{}` is the exact location of the problematic variable
+- `{name}` where name is the variable name is for other variables
 
 Example json response:
 
@@ -178,11 +183,11 @@ Example json response:
   "error": {
     "errors": [
       {
-        "domain": "board",
+        "domain": "thread",
         "reason": "invalidUuid",
         "message": "`123` is not a valid UUIDv4.",
         "locationType": "path",
-        "location": "/boards/"
+        "location": "/boards/{board_uuid}/threads/{}"
       }
     ],
     "code": 400,
@@ -194,7 +199,7 @@ Example json response:
 Example way to trigger:
 
 #+begin_src http
-GET localhost:8000/boards/123
+GET localhost:8000/boards/653e9a6d-1830-4165-8ca7-6f551e4e0ae1/threads/123
 Accept: application/json
 #+end_src
 
@@ -202,14 +207,14 @@ Accept: application/json
 #+begin_example
 HTTP/1.1 400 Bad Request
 Host: localhost:8000
-Date: Fri, 07 Jan 2022 00:24:10 GMT
+Date: Fri, 07 Jan 2022 16:22:29 GMT
 Connection: close
 X-Powered-By: PHP/8.1.1
 Cache-Control: no-cache, private
-Date: Fri, 07 Jan 2022 00:24:10 GMT
+Date: Fri, 07 Jan 2022 16:22:29 GMT
 Content-Type: application/json
 
-{"error":{"errors":[{"domain":"board","reason":"invalidUuid","message":"`123` is not a valid UUIDv4.","locationType":"path","location":"\/boards\/"}],"code":400,"message":"`123` is not a valid UUIDv4."}}
+{"error":{"errors":[{"domain":"thread","reason":"invalidUuid","message":"`123` is not a valid UUIDv4.","locationType":"path","location":"\/boards\/{board_uuid}\/threads\/{}"}],"code":400,"message":"`123` is not a valid UUIDv4."}}
 #+end_example
 
 ** Boards
@@ -385,3 +390,4 @@ Example response json:
 #+end_src
 
 **** TODO Create thread
+** TODO Replies

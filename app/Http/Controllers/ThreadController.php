@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Thread;
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ThreadController extends Controller
 {
@@ -14,8 +14,12 @@ class ThreadController extends Controller
         return Thread::all();
     }
 
-    public function show(Request $request, $id)
+    public function show($board_uuid, $uuid)
     {
-        return Thread::findOrFailUuid($id, $request);
+        $thread = Thread::findOrFailUuid($uuid);
+        if ($thread->board_id !== $board_uuid) {
+            throw new ModelNotFoundException();
+        }
+        return $thread;
     }
 }

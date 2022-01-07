@@ -52,14 +52,14 @@ class ModelUuid extends Model
         return 'string';
     }
 
-    public static function findOrFailUuid(string $uuid, Request $request)
+    public static function findOrFailUuid(string $uuid)
     {
 
         $data = ['uuid' => $uuid];
         $validator = Validator::make($data, ['uuid' => 'required|uuid']);
 
         if ($validator->fails()) {
-            uuid_error($validator, $request, $uuid);
+            uuid_error($validator);
         }
 
         return parent::findOrFail($uuid);
