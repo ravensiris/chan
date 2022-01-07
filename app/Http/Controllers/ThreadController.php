@@ -3,24 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Thread;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
 class ThreadController extends Controller
 {
+    public static $model = Thread::class;
+
     public function list()
     {
         return Thread::all();
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $data = ['id' => $id];
-        $validator = Validator::make($data, ['id' => 'required|uuid']);
-
-        if ($validator->fails()) {
-            uuid_error($validator, $id, '/boards/*/threads/', \Domain::Thread);
-        }
-
-        return Thread::findOrFail($id);
+        return Thread::findOrFailUuid($id, $request);
     }
 }

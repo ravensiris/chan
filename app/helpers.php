@@ -1,6 +1,7 @@
 <?php
 
 use \Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Request;
 use \Illuminate\Validation\ValidationException;
 
 // Enum requires PHP 8.1
@@ -24,28 +25,51 @@ enum LocationType: string
 }
 
 function make_error(
-    Domain $domain,
-    Reason $reason,
+    string $domain,
+    string $reason,
     string $message,
-    LocationType $locatonType,
-    string $location
+    string|null $locatonType,
+    string|null $location
 ) {
-    return [
-        'domain' => $domain->value,
-        'reason' => $reason->value,
+    $error = [
+        'domain' => $domain,
+        'reason' => $reason,
         'message' => $message,
-        'locationType' => $locatonType->value,
-        'location' => $location
     ];
+    if ($locatonType !== null) {
+
+        $error['locationType'] = $locatonType;
+    }
+
+    if ($location !== null) {
+        $error['location'] = $location;
+    }
+
+    return $error;
 }
 
 function uuid_error(
     Validator $validator,
+    Request $request,
     string $invalid_uuid,
-    string $location,
-    Domain $domain = Domain::Global,
-    LocationType $locationType = LocationType::Path,
 ) {
+
+    // TODO: in_json, in_params are untested.
+
+    if (in_path($request, $invalid_uuid)) {
+        $location_type = 'path';
+        $location = '/' . substr($request->path(), 0, -strlen($invalid_uuid));
+    } elseif (in_json($request, $invalid_uuid)) {
+        $location_type = 'json';
+        $location = array_search($invalid_uuid, $request->json()->all());
+    } elseif (in_params($request, $invalid_uuid)) {
+        $location_type = 'parameter';
+        $location = array_search($invalid_uuid, $request->all());
+    } else {
+        $location_type = null;
+        $location = null;
+    }
+
     throw new ValidationException(
         $validator,
         response()->json([
@@ -53,10 +77,10 @@ function uuid_error(
             [
                 'errors' => [
                     make_error(
-                        $domain,
-                        Reason::InvalidUuid,
+                        get_domain($request),
+                        'invalidUuid',
                         "`$invalid_uuid` is not a valid UUIDv4.",
-                        $locationType,
+                        $location_type,
                         $location
                     )
                 ],
@@ -65,4 +89,33 @@ function uuid_error(
             ],
         ], 400)
     );
+}
+
+function in_path(Request $request, string $value)
+{
+    return in_array($value, $request->route()[2] ?? []);
+}
+
+function in_params(Request $request, string $value)
+{
+    return in_array($value, $request->all());
+}
+
+function in_json(Request $request, string $value)
+{
+    return in_array($value, $request->json()->all());
+}
+
+function get_domain(Request $request)
+{
+    try {
+        $name = $request->route();
+        $handler = $name[1]['uses'];
+        $class = explode("@", $handler)[0];
+        $domain_name = strtolower((new ReflectionClass($class::$model))->getShortName());
+
+        return $domain_name;
+    } catch (\Throwable $e) {
+        return 'global';
+    }
 }
