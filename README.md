@@ -1,4 +1,5 @@
 <div id="top"></div>
+
 [![MIT License][license-shield]][license-url]
 
 <!-- PROJECT LOGO -->
@@ -125,22 +126,22 @@ phpunit
 - [x] Boards
    - [x] List
    - [x] View
-- [] Threads
+- [ ] Threads
    - [x] List
    - [x] View
-   - [] Create
-- [] Replies
-    - [] Create
-    - [] List
-    - [] View
-- [] Attachments
-    - [] Attach image to reply
-- [] Limits
-    - [] Limit maximum threads
-    - [] Limit maximum frequency for creating new threads
-    - [] Limit replies per thread
-    - [] Limit maximum replies
-    - [] Limit max image size
+   - [ ] Create
+- [ ] Replies
+    - [ ] Create
+    - [ ] List
+    - [ ] View
+- [ ] Attachments
+    - [ ] Attach image to reply
+- [ ] Limits
+    - [ ] Limit maximum threads
+    - [ ] Limit maximum frequency for creating new threads
+    - [ ] Limit replies per thread
+    - [ ] Limit maximum replies
+    - [ ] Limit max image size
 
 See the [open issues](https://github.com/ravensiris/chan/issues) for a full list of proposed features (and known issues).
 
@@ -198,3 +199,4 @@ Project Link: [https://github.com/ravensiris/chan](https://github.com/ravensiris
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [license-shield]: https://img.shields.io/github/license/ravensiris/chan.svg?style=for-the-badge
 [license-url]: https://github.com/ravensiris/chan/blob/master/LICENSE
+
