@@ -198,5 +198,5 @@ Project Link: [https://github.com/ravensiris/chan](https://github.com/ravensiris
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [license-shield]: https://img.shields.io/github/license/ravensiris/chan.svg?style=for-the-badge
-[license-url]: https://github.com/ravensiris/chan/blob/master/LICENSE
+[license-url]: https://github.com/ravensiris/chan/blob/master/COPYING
 
