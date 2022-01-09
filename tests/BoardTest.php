@@ -37,7 +37,7 @@ class BoardTest extends TestCase
                     'reason' => 'invalidUuid',
                     'message' => '`123` is not a valid UUIDv4.',
                     'locationType' => 'path',
-                    'location' => '/boards/'
+                    'location' => '/boards/{}'
                 ]
             ],
             'code' => 400,

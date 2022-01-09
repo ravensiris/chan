@@ -1,10 +1,11 @@
 <?php
 
+use App\Models\Board;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBoardsTable extends Migration
+class CreateThreadsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +14,12 @@ class CreateBoardsTable extends Migration
      */
     public function up()
     {
-        Schema::create('boards', function (Blueprint $table) {
+        Schema::create('threads', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->text('name')->unique();
-            $table->text('shorthand')->unique();
-            // description generated from name and shorthand in model
+            $table->uuid('board_id')->foreign(Board::class);
+            // TODO: Remove nullable when replies implemented
+            $table->uuid('op_id')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -28,6 +30,6 @@ class CreateBoardsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('boards');
+        Schema::dropIfExists('threads');
     }
 }

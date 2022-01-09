@@ -4,5 +4,7 @@
 
 $router->group(['prefix' => 'boards'], function () use ($router) {
     $router->get('/', 'BoardController@list');
-    $router->get('/{id}', 'BoardController@show');
+    $router->get('/{board_uuid}/threads', 'ThreadController@list');
+    $router->get('/{board_uuid}/threads/{uuid}', 'ThreadController@show');
+    $router->get('/{uuid}', 'BoardController@show');
 });

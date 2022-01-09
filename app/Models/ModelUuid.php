@@ -3,7 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class ModelUuid extends Model
@@ -49,5 +50,18 @@ class ModelUuid extends Model
     public function getKeyType()
     {
         return 'string';
+    }
+
+    public static function findOrFailUuid(string $uuid)
+    {
+
+        $data = ['uuid' => $uuid];
+        $validator = Validator::make($data, ['uuid' => 'required|uuid']);
+
+        if ($validator->fails()) {
+            uuid_error($validator);
+        }
+
+        return parent::findOrFail($uuid);
     }
 }
