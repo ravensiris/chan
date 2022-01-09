@@ -1,0 +1,410 @@
+#+TITLE: Chan Specification
+#+AUTHOR: Maksymilian Jodłowski
+#+PROPERTY: header-args:shell :var host="localhost" port="8000" :exports code
+#+PROPERTY: header-args:http :var host="localhost:8000" :pretty :results raw :wrap src json :exports both
+
+* Abstract
+This document is a complete specification of the Chan API.
+
+Document in [[https://orgmode.org/][Org mode]] format.
+Use [[https://github.com/zweifisch/ob-http][ob-http]] to run(C-c C-c) HTTP request inside this file.
+
+It assumes that reader has followed the instructions in the [[https://github.com/ravensiris/chan/blob/master/README.md][README]].
+
+Everything in this document is reproducible given that user has run:
+
+#+begin_src shell
+php artisan migrate:fresh && php artisan db:seed
+#+end_src
+
+Which will fill the database with the same objects as used below, even the uuids are constant.
+
+Run project with(inside project root):
+
+#+begin_src shell :noeval
+php -S $host:$port -t public
+#+end_src
+
+* Models
+Each database model described here.
+
+Models will have a table with the following headers:
+- attribute :: name of the attribute
+- type :: valid -postgresql- type. see [[https://www.postgresql.org/docs/9.5/datatype.html][this]] for more information.
+- example :: an example value. this value *exists* in the seeded database.
+- extra :: additional information. see [[appendix:extra_field][this]] section for more information.
+
+** Board
+
+| attribute   | type | example                              | extra   |
+|-------------+------+--------------------------------------+---------|
+| id          | uuid | 0bb3abb9-986c-47a3-9a1c-c61e67d506f2 |         |
+| name        | text | Technology                           | unique  |
+| shorthand   | text | g                                    | unique  |
+| description | text | /g/ - Technology                     | virtual |
+
+#+begin_src plantuml :noweb-ref model-board
+class Board {
+  id: uuid
+  name: text
+  shorthand: text
+  description: text <<virtual>>
+}
+#+end_src
+
+#+RESULTS:
+[[file:/tmp/babel-ploV89/plantuml-G80ein.png]]
+
+** Thread
+
+| attribute  | type      | example                              | extra |
+|------------+-----------+--------------------------------------+-------|
+| id         | uuid      | 1592fe29-bddb-4279-b47d-bb41e23a67a0 |       |
+| board_id   | uuid      | eb6f2aa2-b9a7-4239-a89c-8d2cef484dae |       |
+| op_id      | uuid      | c96ffb89-028a-4546-8f47-24b40ca00671 | todo  |
+| created_at | timestamp | 2022-01-06T21:01:24.000000Z          |       |
+| updated_at | timestamp | 2022-01-06T21:01:24.000000Z          |       |
+
+
+#+begin_src plantuml :noweb-ref model-thread
+class Thread {
+  id: uuid
+  board_id: uuid
+  op_id: uuid
+  created_at: timestamp
+  updated_at: timestamp
+}
+#+end_src
+
+#+RESULTS:
+[[file:/tmp/babel-2tNUlR/plantuml-Su8UCy.png]]
+
+*** Relationships
+
+#+begin_src plantuml :noweb yes
+@startuml
+left to right direction
+<<model-thread>>
+<<model-board>>
+Thread::board_id ||-- Board::id
+@enduml
+#+end_src
+
+#+RESULTS:
+[[file:/tmp/babel-2tNUlR/plantuml-dXBec5.png]]
+
+* Routes
+Routes are split into groups of URL prefixes.
+
+Each endpoint has it's errors documented in a subsection with an example way to trigger.
+See [[<<appendix:errors>>][this]] section for more information about errors.
+
+** =/boards/=
+*** *GET* =/boards/=
+
+#+NAME: boards-list
+#+begin_src http
+GET ${host}/boards/
+#+end_src
+
+#+RESULTS:
+#+begin_src json
+[
+  {
+    "id": "0bb3abb9-986c-47a3-9a1c-c61e67d506f2",
+    "name": "Technology",
+    "shorthand": "g",
+    "description": "/g/ - Technology"
+  },
+  {
+    "id": "db86fdc5-edfd-43ae-bc59-199262fa6f8c",
+    "name": "Science",
+    "shorthand": "sci",
+    "description": "/sci/ - Science"
+  }
+]
+#+end_src
+
+*** *GET* =/boards/{board_uuid}=
+
+#+NAME: boards-show
+#+begin_src http
+GET ${host}/boards/0bb3abb9-986c-47a3-9a1c-c61e67d506f2
+#+end_src
+
+#+RESULTS: boards-show
+#+begin_src json
+{
+  "id": "0bb3abb9-986c-47a3-9a1c-c61e67d506f2",
+  "name": "Technology",
+  "shorthand": "g",
+  "description": "/g/ - Technology"
+}
+#+end_src
+
+**** Invalid ={board_uuid}=
+
+#+NAME: boards-show-invalid-uuid
+#+begin_src http
+GET ${host}/boards/123
+#+end_src
+
+#+RESULTS: boards-show-invalid-uuid
+#+begin_src json
+{
+  "error": {
+    "errors": [
+      {
+        "domain": "board",
+        "reason": "invalidUuid",
+        "message": "`123` is not a valid UUIDv4.",
+        "locationType": "path",
+        "location": "/boards/{}"
+      }
+    ],
+    "code": 400,
+    "message": "`123` is not a valid UUIDv4."
+  }
+}
+#+end_src
+
+**** Not found ={board_uuid}=
+
+#+NAME: boards-show-not-found
+#+begin_src http
+GET ${host}/boards/abb3abb9-986c-47a3-9a1c-c61e67d506f3
+#+end_src
+
+#+RESULTS: boards-show-not-found
+#+begin_src json
+{
+  "error": {
+    "errors": [
+      {
+        "domain": "thread",
+        "reason": "notFound",
+        "message": "Not Found"
+      }
+    ],
+    "code": 404,
+    "message": "Not Found"
+  }
+}
+#+end_src
+
+*** *GET* =/boards/{board_uuid}/threads=
+
+#+NAME: boards-show-threads
+#+begin_src http
+GET ${host}/boards/0bb3abb9-986c-47a3-9a1c-c61e67d506f2/threads
+#+end_src
+
+#+RESULTS: boards-show-threads
+#+begin_src json
+[
+  {
+    "id": "9e67978b-b331-43b0-8e49-34aced84863b",
+    "board_id": "0bb3abb9-986c-47a3-9a1c-c61e67d506f2",
+    "op_id": null,
+    "created_at": "2022-01-01T00:05:30.000000Z",
+    "updated_at": "2022-01-01T00:05:00.000000Z"
+  },
+  {
+    "id": "9b664aa1-443d-4443-8046-7e88f886114c",
+    "board_id": "0bb3abb9-986c-47a3-9a1c-c61e67d506f2",
+    "op_id": null,
+    "created_at": "2022-01-01T00:04:30.000000Z",
+    "updated_at": "2022-01-01T00:04:00.000000Z"
+  },
+  {
+    "id": "1a118a83-0154-4a91-9b4f-d7b8295e7637",
+    "board_id": "0bb3abb9-986c-47a3-9a1c-c61e67d506f2",
+    "op_id": null,
+    "created_at": "2022-01-01T00:03:30.000000Z",
+    "updated_at": "2022-01-01T00:03:00.000000Z"
+  }
+]
+#+end_src
+
+**** Invalid ={board_uuid}=
+
+#+NAME: boards-show-threads-invalid-uuid
+#+begin_src http
+GET ${host}/boards/123/threads
+#+end_src
+
+#+RESULTS: boards-show-threads-invalid-uuid
+#+begin_src json
+{
+  "error": {
+    "errors": [
+      {
+        "domain": "thread",
+        "reason": "invalidUuid",
+        "message": "`123` is not a valid UUIDv4."
+      }
+    ],
+    "code": 400,
+    "message": "`123` is not a valid UUIDv4."
+  }
+}
+#+end_src
+
+**** Not found ={board_uuid}=
+
+#+NAME: boards-show-threads-not-found
+#+begin_src http
+GET ${host}/boards/abb3abb9-986c-47a3-9a1c-c61e67d506f3/threads
+#+end_src
+
+#+RESULTS: boards-show-threads-not-found
+#+begin_src json
+{
+  "error": {
+    "errors": [
+      {
+        "domain": "thread",
+        "reason": "notFound",
+        "message": "Not Found"
+      }
+    ],
+    "code": 404,
+    "message": "Not Found"
+  }
+}
+#+end_src
+
+*** *GET* =/boards/{board_uuid}/threads/{thread_uuid}=
+
+#+NAME: show-thread
+#+begin_src http
+GET ${host}/boards/0bb3abb9-986c-47a3-9a1c-c61e67d506f2/threads/9e67978b-b331-43b0-8e49-34aced84863b
+#+end_src
+
+#+RESULTS: show-thread
+#+begin_src json
+{
+  "id": "9e67978b-b331-43b0-8e49-34aced84863b",
+  "board_id": "0bb3abb9-986c-47a3-9a1c-c61e67d506f2",
+  "op_id": null,
+  "created_at": "2022-01-01T00:05:30.000000Z",
+  "updated_at": "2022-01-01T00:05:00.000000Z"
+}
+#+end_src
+
+**** Invalid ={board_uuid}=
+
+No checks performed on ={board_uuid}= yet.
+
+#+NAME: boards-show-thread-invalid-board-uuid
+#+begin_src http
+GET ${host}/boards/123/threads/9e67978b-b331-43b0-8e49-34aced84863b
+#+end_src
+
+#+RESULTS: boards-show-thread-invalid-board-uuid
+#+begin_src json
+{
+  "error": {
+    "errors": [
+      {
+        "domain": "thread",
+        "reason": "notFound",
+        "message": "Not Found"
+      }
+    ],
+    "code": 404,
+    "message": "Not Found"
+  }
+}
+#+end_src
+
+**** Not found ={board_uuid}=
+
+#+NAME: boards-show-thread-board-not-found
+#+begin_src http
+GET ${host}/boards/abb3abb9-986c-47a3-9a1c-c61e67d506f3/threads/9e67978b-b331-43b0-8e49-34aced84863b
+#+end_src
+
+#+RESULTS: boards-show-thread-board-not-found
+#+begin_src json
+{
+  "error": {
+    "errors": [
+      {
+        "domain": "thread",
+        "reason": "notFound",
+        "message": "Not Found"
+      }
+    ],
+    "code": 404,
+    "message": "Not Found"
+  }
+}
+#+end_src
+
+**** Invalid ={thread_uuid}=
+
+#+NAME: show-thread-invalid-thread-uuid
+#+begin_src http
+GET ${host}/boards/0bb3abb9-986c-47a3-9a1c-c61e67d506f2/threads/123
+#+end_src
+
+#+RESULTS: show-thread-invalid-thread-uuid
+#+begin_src json
+{
+  "error": {
+    "errors": [
+      {
+        "domain": "thread",
+        "reason": "invalidUuid",
+        "message": "`123` is not a valid UUIDv4.",
+        "locationType": "path",
+        "location": "/boards/{board_uuid}/threads/{}"
+      }
+    ],
+    "code": 400,
+    "message": "`123` is not a valid UUIDv4."
+  }
+}
+#+end_src
+
+**** Not found ={thread_uuid}=
+
+#+NAME: show-thread-not-found
+#+begin_src http
+GET ${host}/boards/0bb3abb9-986c-47a3-9a1c-c61e67d506f2/threads/ae67978b-b331-43b0-8e49-34aced84863c
+#+end_src
+
+#+RESULTS: show-thread-not-found
+#+begin_src json
+{
+  "error": {
+    "errors": [
+      {
+        "domain": "thread",
+        "reason": "notFound",
+        "message": "Not Found"
+      }
+    ],
+    "code": 404,
+    "message": "Not Found"
+  }
+}
+#+end_src
+
+* Appendix
+** Extra field
+<<appendix:extra_field>>
+
+Valid values are:
+- unique :: Attribute has a *UNIQUE* constraint. See [[https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-UNIQUE-CONSTRAINTS][this]] for more information.
+- virtual :: Attribute doesn't exist in the database. It's created dynamically based on other attributes.
+- todo :: Attribute exists, is nullable until another related feature is done.
+** TODO Errors
+<<appendix:errors>>
+
+ Error responses based on Google APIs.
+
+ Some resources to make it easier to understand:
+ - [[https://cloud.google.com/storage/docs/json_api/v1/status-codes][HTTP status and error codes for JSON]]
+ - [[https://developers.google.com/calendar/api/guides/errors][Handle API Errors - Google Calendar API]]
