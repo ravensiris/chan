@@ -57,7 +57,7 @@ class Handler extends ExceptionHandler
                 'errors' =>
                 [
                     [
-                        'domain' => 'global',
+                        'domain' => request_domain($request),
                         'reason' => 'notFound',
                         'message' => 'Not Found',
                     ]
