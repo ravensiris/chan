@@ -1,0 +1,53 @@
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_DATABASE}
+    # ports:
+    #   - "5432:5432"
+    restart: always
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+  chan-api:
+    build: .
+    ports:
+      - "9000:9000"
+    depends_on:
+      - postgres
+    environment:
+      - APP_NAME=Chan
+      - APP_ENV=local
+      - APP_KEY=${APP_KEY}
+      - APP_DEBUG=false
+      - APP_URL=${APP_URL}
+      - APP_TIMEZONE=UTC
+      - LOG_CHANNEL=stack
+      - LOG_SLACK_WEBHOOK_URL=
+      - DB_CONNECTION=pgsql
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - CACHE_DRIVER=file
+      - QUEUE_CONNECTION=sync
+
+  caddy:
+      image: caddy:2.4.3-alpine
+      restart: unless-stopped
+      command: caddy reverse-proxy --from https://chan-api-ri.herokuapp.com:443 --to http://chan-api:3000
+      ports:
+        - 80:80
+        - 443:443
+      volumes:
+        - caddy:/data
+      depends_on:
+        - chan-api
+
+volumes:
+    caddy:
+    postgres:
