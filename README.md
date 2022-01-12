@@ -118,7 +118,31 @@ phpunit
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+## Docker
 
+You can also run the project using `docker-compose`.
+
+### Run using entrypoint script
+```sh
+chmod +x entrypoint.sh
+./entrypoint.sh
+```
+
+You should now be able to enter [/boards](http://localhost:9000/boards)
+
+### Issue commands manually
+```sh
+# Run seeds and migrations
+docker-compose --env-file docker.env run chan-api php artisan migrate:fresh --seed
+# Run in background
+docker-compose --env-file docker.env up -d
+```
+
+You should now be able to enter [/boards](http://localhost:9000/boards)
+
+### Configure
+
+You can set the environmental variables inside the `docker.env` file or inside `docker-compose.yml`
 
 <!-- ROADMAP -->
 ## Roadmap
