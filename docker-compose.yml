@@ -35,6 +35,7 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - CACHE_DRIVER=file
       - QUEUE_CONNECTION=sync
+      - PORT=9000
 
   caddy:
       image: caddy:2.4.3-alpine
