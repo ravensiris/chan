@@ -6,8 +6,6 @@ services:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_DATABASE}
-    # ports:
-    #   - "5432:5432"
     restart: always
     volumes:
       - postgres:/var/lib/postgresql/data
@@ -37,18 +35,5 @@ services:
       - QUEUE_CONNECTION=sync
       - PORT=9000
 
-  caddy:
-      image: caddy:2.4.3-alpine
-      restart: unless-stopped
-      command: caddy reverse-proxy --from https://chan-api-ri.herokuapp.com:443 --to http://chan-api:3000
-      ports:
-        - 80:80
-        - 443:443
-      volumes:
-        - caddy:/data
-      depends_on:
-        - chan-api
-
 volumes:
-    caddy:
     postgres:
