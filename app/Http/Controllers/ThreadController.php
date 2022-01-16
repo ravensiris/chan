@@ -13,12 +13,14 @@ class ThreadController extends Controller
 
     public function list($board_uuid)
     {
-        return Board::findOrFailUuid($board_uuid)->threads;
+        $board = Board::findOrFailUuid($board_uuid);
+        return Thread::with('op')->whereBelongsTo($board)->get();
     }
 
     public function show($board_uuid, $uuid)
     {
         $thread = Thread::findOrFailUuid($uuid);
+        $thread->op;
         if ($thread->board_id !== $board_uuid) {
             throw new ModelNotFoundException();
         }
