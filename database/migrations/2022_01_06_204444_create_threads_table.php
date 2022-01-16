@@ -17,8 +17,6 @@ class CreateThreadsTable extends Migration
         Schema::create('threads', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('board_id')->foreign(Board::class);
-            // TODO: Remove nullable when replies implemented
-            $table->uuid('op_id')->nullable();
             $table->timestamps();
         });
     }
