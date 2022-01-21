@@ -1,6 +1,5 @@
 services:
-  postgres:
-    container_name: postgres
+  db:
     image: postgres:latest
     environment:
       - POSTGRES_USER=${DB_USERNAME}
@@ -9,13 +8,14 @@ services:
     restart: always
     volumes:
       - postgres:/var/lib/postgresql/data
+    networks:
+      - web
 
-  chan-api:
+  backend:
+    tty: true
     build: .
-    ports:
-      - "9000:9000"
     depends_on:
-      - postgres
+      - db
     environment:
       - APP_NAME=Chan
       - APP_ENV=local
@@ -23,17 +23,31 @@ services:
       - APP_DEBUG=false
       - APP_URL=${APP_URL}
       - APP_TIMEZONE=UTC
-      - LOG_CHANNEL=stack
-      - LOG_SLACK_WEBHOOK_URL=
-      - DB_CONNECTION=pgsql
+      - LOG_CHANNEL=stdout
+      - DB_CONNECTION=${DB_CONNECTION}
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
       - DB_DATABASE=${DB_DATABASE}
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
-      - CACHE_DRIVER=file
+      - CACHE_DRIVER=database
       - QUEUE_CONNECTION=sync
-      - PORT=9000
+      - PORT=${PORT}
+    networks:
+      - web
+  web:
+    image: "bitnami/nginx:latest"
+    depends_on:
+      - backend
+    networks:
+      - web
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./nginx.conf:/opt/bitnami/nginx/conf/server_blocks/web.conf
 
 volumes:
-    postgres:
+  postgres:
+networks:
+  web:
+    driver: bridge

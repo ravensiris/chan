@@ -1,0 +1,41 @@
+FROM php:8.1.1-fpm as pgsql_exts
+RUN apt-get update
+RUN apt-get install -y libpq-dev \
+    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+    && docker-php-ext-install pdo pdo_pgsql pgsql
+WORKDIR /
+RUN mkdir extensions && find -iname '*pgsql.so' -exec cp {} extensions \;
+
+FROM bitnami/php-fpm:8.1.1-prod as builder
+COPY . /app
+WORKDIR /app
+RUN mkdir -p /app/storage/logs && chmod 777 /app/storage/ -R
+RUN composer install
+
+FROM bitnami/nginx:latest as nginx
+COPY ./nginx-heroku.conf /opt/bitnami/nginx/conf/nginx.conf
+CMD export NGINX_HTTP_PORT_NUMBER=$PORT && /opt/bitnami/scripts/nginx/entrypoint.sh /opt/bitnami/scripts/nginx/run.sh
+
+FROM bitnami/php-fpm:8.1.1-prod as php-fpm
+COPY --from=pgsql_exts extensions/pdo_pgsql.so /opt/bitnami/php/lib/php/extensions/
+COPY --from=pgsql_exts extensions/pgsql.so /opt/bitnami/php/lib/php/extensions/
+RUN echo 'extension="/opt/bitnami/php/lib/php/extensions/pdo_pgsql.so"' >> /opt/bitnami/php/etc/php.ini && echo 'extension="/opt/bitnami/php/lib/php/extensions/pgsql.so"' >> /opt/bitnami/php/etc/php.ini
+RUN sed -E '/;clear_env/s/;//g' /opt/bitnami/php/etc/php-fpm.d/www.conf -i
+
+FROM docker.io/bitnami/minideb:buster
+RUN install_packages acl libgeoip1  ca-certificates curl gzip libbsd0 libbz2-1.0 libc6 libcom-err2 libcurl4 libexpat1 libffi6 libfftw3-double3 libfontconfig1 libfreetype6 libgcc1 libgcrypt20 libglib2.0-0 libgmp10 libgnutls30 libgomp1 libgpg-error0 libgssapi-krb5-2 libhogweed4 libicu63 libidn2-0 libjpeg62-turbo libk5crypto3 libkeyutils1 libkrb5-3 libkrb5support0 liblcms2-2 libldap-2.4-2 liblqr-1-0 libltdl7 liblzma5 libmagickcore-6.q16-6 libmagickwand-6.q16-6 libmemcached11 libmemcachedutil2 libncurses6 libnettle6 libnghttp2-14 libonig5 libp11-kit0 libpcre3 libpng16-16 libpq5 libpsl5 libreadline7 librtmp1 libsasl2-2 libsodium23 libsqlite3-0 libssh2-1 libssl1.1 libstdc++6 libsybdb5 libtasn1-6 libtidy5deb1 libtinfo6 libunistring2 libuuid1 libwebp6 libx11-6 libxau6 libxcb1 libxdmcp6 libxext6 libxml2 libxslt1.1 libzip4 procps tar wget zlib1g
+COPY --from=nginx / /
+COPY --from=php-fpm / /
+COPY --from=builder /app /app
+COPY ./heroku-entrypoint.sh /entrypoint.sh
+ENV HOME="/" \
+    OS_ARCH="amd64" \
+    OS_FLAVOUR="debian-10" \
+    OS_NAME="linux"
+ENV BITNAMI_APP_NAME="nginx" \
+    BITNAMI_IMAGE_VERSION="1.21.5-debian-10-r23" \
+    NGINX_HTTPS_PORT_NUMBER="" \
+    NGINX_HTTP_PORT_NUMBER="" \
+    PATH="/opt/bitnami/common/bin:/opt/bitnami/nginx/sbin:/opt/bitnami/php/bin:/opt/bitnami/php/sbin:$PATH"
+WORKDIR /app
+CMD /entrypoint.sh
