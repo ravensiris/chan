@@ -2,34 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Reply;
 use App\Models\Thread;
-use App\Models\Board;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
-class ThreadController extends Controller
+class ReplyController extends Controller
 {
-    public static $model = Thread::class;
+    public static $model = Reply::class;
 
-    public function list($board_uuid)
+    public function show($uuid)
     {
-        $board = Board::findOrFailUuid($board_uuid);
-        return Thread::with('op')->whereBelongsTo($board)->get();
+        return Reply::findOrFailUuid($uuid);
     }
 
-    public function show($board_uuid, $uuid)
+    public function list($thread_uuid)
     {
-        $thread = Thread::findOrFailUuid($uuid);
-        $thread->op;
+        $thread = Thread::findOrFailUuid($thread_uuid);
+        return $thread->replies;
+    }
+
+    public function create(Request $request, $board_uuid, $thread_uuid)
+    {
+        $thread = Thread::findOrFailUuid($thread_uuid);
+
         if ($thread->board_id !== $board_uuid) {
             throw new ModelNotFoundException();
         }
-        return $thread;
-    }
-
-    public function create(Request $request, $board_uuid)
-    {
-        $board = Board::findOrFailUuid($board_uuid);
 
         try {
             $this->validate($request, [
@@ -63,11 +62,8 @@ class ThreadController extends Controller
             // TODO: User can post image to that uuid
         }
 
-        $thread = $board->threads()->create();
-        $thread->replies()->create($request->only(['title', 'body']));
-        $thread->refresh();
-        $thread->op;
+        $reply = $thread->replies()->create($request->only(['title', 'body']));
 
-        return $thread;
+        return $reply;
     }
 }

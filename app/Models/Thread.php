@@ -14,6 +14,16 @@ class Thread extends ModelUuid
         return $this->belongsTo(Board::class);
     }
 
+    public function replies()
+    {
+        return $this->hasMany(Reply::class);
+    }
+
+    public function op()
+    {
+        return $this->hasOne(Reply::class)->oldest();
+    }
+
     /**
      * Create a new factory instance for the model.
      *

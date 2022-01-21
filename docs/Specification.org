@@ -81,7 +81,7 @@ class Thread {
 
 *** Relationships
 
-#+begin_src plantuml :noweb yes
+#+begin_src plantuml :noweb yes :noweb-ref relation-thread-board
 @startuml
 left to right direction
 <<model-thread>>
@@ -92,6 +92,51 @@ Thread::board_id ||-- Board::id
 
 #+RESULTS:
 [[file:/tmp/babel-2tNUlR/plantuml-dXBec5.png]]
+
+
+** Reply
+
+| attribute  | type         | example                              | extra     |
+|------------+--------------+--------------------------------------+-----------|
+| id         | uuid         |                                      |           |
+| thread_id  | uuid         | 1592fe29-bddb-4279-b47d-bb41e23a67a0 |           |
+| title      | varchar(50)  | Green is my pepper                   | minlen 5  |
+| body       | varchar(500) | Stallman goes brrrr                  |           |
+| image      | bytea        |                                      | limit 1MB |
+| created_at | timestamp    |                                      |           |
+| updated_at | timestamp    |                                      |           |
+
+
+#+begin_src plantuml :noweb-ref model-reply
+class Reply {
+  id: uuid
+  thread_id: uuid
+  title: varchar<50>
+  body: varchar<500>
+  image: bytea<1MB>
+  created_at: timestamp
+  updated_at: timestamp
+}
+#+end_src
+
+#+RESULTS:
+[[file:/tmp/babel-RzbT7M/plantuml-fpaIwn.png]]
+
+*** Relationships
+
+#+begin_src plantuml :noweb yes :noweb-ref relation-thread-board-reply
+@startuml
+left to right direction
+<<model-thread>>
+<<model-board>>
+<<model-reply>>
+Thread::board_id ||-- Board::id
+Reply::thread_id ||-- Thread::id
+@enduml
+#+end_src
+
+#+RESULTS:
+[[file:/tmp/babel-RzbT7M/plantuml-OIbH1z.png]]
 
 * Routes
 Routes are split into groups of URL prefixes.
@@ -399,7 +444,11 @@ GET ${host}/boards/0bb3abb9-986c-47a3-9a1c-c61e67d506f2/threads/ae67978b-b331-43
 Valid values are:
 - unique :: Attribute has a *UNIQUE* constraint. See [[https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-UNIQUE-CONSTRAINTS][this]] for more information.
 - virtual :: Attribute doesn't exist in the database. It's created dynamically based on other attributes.
+- nullable :: Can be null
 - todo :: Attribute exists, is nullable until another related feature is done.
+- limit :: Limit to size(e.g. MB) or amount
+- minlen :: Minimum length in characters
+
 ** TODO Errors
 <<appendix:errors>>
 

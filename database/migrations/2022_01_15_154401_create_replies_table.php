@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\Board;
+use App\Models\Thread;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateThreadsTable extends Migration
+class CreateRepliesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,9 +14,12 @@ class CreateThreadsTable extends Migration
      */
     public function up()
     {
-        Schema::create('threads', function (Blueprint $table) {
+        Schema::create('replies', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('board_id')->foreign(Board::class);
+            $table->uuid('thread_id')->foreign(Thread::class);
+            $table->uuid('image_id')->nullable();
+            $table->string('title', 50);
+            $table->string('body', 500);
             $table->timestamps();
         });
     }
@@ -28,6 +31,6 @@ class CreateThreadsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('threads');
+        Schema::dropIfExists('replies');
     }
 }

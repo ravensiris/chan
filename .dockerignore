@@ -1,0 +1,16 @@
+/vendor
+/.idea
+Homestead.json
+Homestead.yaml
+.env
+storage
+Dockerfile*
+entrypoint.sh
+heroku.yml
+nginx.conf
+docker-compose.yml
+.styleci.yml
+.phpunit.result.cache
+.env.example
+.editorconfig
+.dockerignore
