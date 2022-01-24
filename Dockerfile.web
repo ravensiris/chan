@@ -11,6 +11,7 @@ COPY . /app
 WORKDIR /app
 RUN mkdir -p /app/storage/logs && chmod 777 /app/storage/ -R
 RUN composer install
+RUN php artisan swagger:generate
 
 FROM bitnami/nginx:latest as nginx
 COPY ./nginx-heroku.conf /opt/bitnami/nginx/conf/nginx.conf
