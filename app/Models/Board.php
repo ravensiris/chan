@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use OpenApi\Attributes as OAT;
 
 #[OAT\Schema(
-    schema: 'board',
+    schema: 'Board',
     properties: [
         new OAT\Property(
             property: 'id',
