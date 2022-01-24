@@ -6,17 +6,85 @@ use App\Models\Thread;
 use App\Models\Board;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use OpenApi\Attributes as OAT;
 
 class ThreadController extends Controller
 {
     public static $model = Thread::class;
 
+    #[OAT\Get(
+        path: '/boards/{board}/threads',
+        parameters: [
+            new OAT\Parameter(
+                name: 'board',
+                in: 'path',
+                required: true,
+                schema: new OAT\Schema(
+                    type: 'string',
+                    format: 'uuid'
+                )
+            )
+        ],
+        tags: ['threads'],
+        operationId: 'getThreads',
+        responses: [
+            new OAT\Response(
+                response: 200,
+                description: 'List of Threads',
+                content: new OAT\JsonContent(
+                    type: "array",
+                    items: new OAT\Items(ref: '#/components/schemas/Thread'),
+                )
+            )
+        ]
+    )]
     public function list($board_uuid)
     {
         $board = Board::findOrFailUuid($board_uuid);
         return Thread::with('op')->whereBelongsTo($board)->get();
     }
 
+    #[OAT\Get(
+        path: '/boards/{board}/threads/{thread}',
+        tags: ['threads'],
+        operationId: 'getThreadById',
+        parameters: [
+            new OAT\Parameter(
+                name: 'board',
+                in: 'path',
+                required: true,
+                schema: new OAT\Schema(
+                    type: 'string',
+                    format: 'uuid'
+                )
+            ),
+            new OAT\Parameter(
+                name: 'thread',
+                in: 'path',
+                required: true,
+                schema: new OAT\Schema(
+                    type: 'string',
+                    format: 'uuid'
+                )
+            )
+        ],
+        responses: [
+            new OAT\Response(
+                response: 200,
+                description: 'Single Thread',
+                content: new OAT\JsonContent(
+                    ref: '#/components/schemas/Thread',
+                )
+            ),
+            new OAT\Response(
+                response: 404,
+                description: 'Not Found',
+                content: new OAT\JsonContent(
+                    ref: '#/components/schemas/ErrorResponse',
+                )
+            )
+        ]
+    )]
     public function show($board_uuid, $uuid)
     {
         $thread = Thread::findOrFailUuid($uuid);
@@ -27,6 +95,43 @@ class ThreadController extends Controller
         return $thread;
     }
 
+    #[OAT\Post(
+        path: '/boards/{board}/threads',
+        tags: ['threads'],
+        operationId: 'createThread',
+        parameters: [
+            new OAT\Parameter(
+                name: 'board',
+                in: 'path',
+                required: true,
+                schema: new OAT\Schema(
+                    type: 'string',
+                    format: 'uuid'
+                )
+            ),
+        ],
+        responses: [
+            new OAT\Response(
+                response: 200,
+                description: 'Created Thread',
+                content: new OAT\JsonContent(
+                    ref: '#/components/schemas/Thread',
+                )
+            ),
+            new OAT\Response(
+                response: 400,
+                description: 'Post data invalid',
+                content: new OAT\JsonContent(
+                    ref: '#/components/schemas/ErrorResponse',
+                )
+            )
+        ],
+        requestBody: new OAT\RequestBody(
+            content: new OAT\JsonContent(
+                ref: '#/components/schemas/Reply',
+            )
+        )
+    )]
     public function create(Request $request, $board_uuid)
     {
         $board = Board::findOrFailUuid($board_uuid);

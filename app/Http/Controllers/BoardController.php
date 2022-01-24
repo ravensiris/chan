@@ -19,7 +19,7 @@ class BoardController extends Controller
                 description: 'List of Boards',
                 content: new OAT\JsonContent(
                     type: "array",
-                    items: new OAT\Items(ref: '#/components/schemas/board'),
+                    items: new OAT\Items(ref: '#/components/schemas/Board'),
                 )
             )
         ]
@@ -30,11 +30,11 @@ class BoardController extends Controller
     }
 
     #[OAT\Get(
-        path: '/boards/{board_id}',
+        path: '/boards/{board}',
         tags: ['boards'],
         operationId: 'getBoardById',
         parameters: [new OAT\Parameter(
-            name: 'board_id',
+            name: 'board',
             in: 'path',
             required: true,
             schema: new OAT\Schema(
@@ -47,18 +47,15 @@ class BoardController extends Controller
                 response: 200,
                 description: 'Single Board',
                 content: new OAT\JsonContent(
-                    ref: '#/components/schemas/board',
+                    ref: '#/components/schemas/Board',
                 )
             ),
             new OAT\Response(
                 response: 404,
                 description: 'Not Found',
-                // TODO: add response
-            ),
-            new OAT\Response(
-                response: 400,
-                description: 'Invalid uuid',
-                // TODO: add response
+                content: new OAT\JsonContent(
+                    ref: '#/components/schemas/ErrorResponse',
+                )
             )
         ]
     )]
