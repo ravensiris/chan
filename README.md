@@ -17,7 +17,7 @@
     <a href="https://github.com/ravensiris/chan"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/ravensiris/chan">View Demo</a>
+    <a href="https://chan-api-ri.herokuapp.com/docs">View Demo</a>
     ·
     <a href="https://github.com/ravensiris/chan/issues">Report Bug</a>
     ·
@@ -102,7 +102,9 @@ You can also connect to the database using:
 psql -d chan
 ```
 
-Might be useful if you need to tweak stuff like encoding or limits. 4. Run migrations
+Might be useful if you need to tweak stuff like encoding or limits.
+
+4. Run migrations
 
 ```sh
 php artisan migrate:fresh
