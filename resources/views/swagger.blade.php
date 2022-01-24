@@ -4,7 +4,7 @@
   <head>
     <meta charset="UTF-8">
     <title>Swagger UI</title>
-    <link rel="stylesheet" type="text/css" href="./css/swagger-ui.css" />
+    <link rel="stylesheet" type="text/css" href="/css/swagger-ui.css" />
     <style>
       html
       {
@@ -31,13 +31,13 @@
   <body>
     <div id="swagger-ui"></div>
 
-    <script src="./js/swagger-ui-bundle.js" charset="UTF-8"> </script>
-    <script src="./js/swagger-ui-standalone-preset.js" charset="UTF-8"> </script>
+    <script src="/js/swagger-ui-bundle.js" charset="UTF-8"> </script>
+    <script src="/js/swagger-ui-standalone-preset.js" charset="UTF-8"> </script>
     <script>
     window.onload = function() {
       // Begin Swagger UI call region
       const ui = SwaggerUIBundle({
-        url: "assets/swagger.yml",
+        url: "/assets/swagger.yml",
         dom_id: '#swagger-ui',
         deepLinking: true,
         presets: [
