@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -59,7 +60,7 @@ class ModelUuid extends Model
         $validator = Validator::make($data, ['uuid' => 'required|uuid']);
 
         if ($validator->fails()) {
-            uuid_error($validator);
+            throw new ModelNotFoundException();
         }
 
         return parent::findOrFail($uuid);

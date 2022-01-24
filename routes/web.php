@@ -2,6 +2,8 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
+$router->get('/docs', fn () => view('swagger'));
+
 $router->group(['prefix' => 'boards'], function () use ($router) {
     $router->get('/', 'BoardController@list');
     $router->get('/{board_uuid}/threads', 'ThreadController@list');

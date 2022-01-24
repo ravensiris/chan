@@ -11,6 +11,7 @@ COPY . /app
 WORKDIR /app
 RUN mkdir -p /app/storage/logs && chmod 777 /app/storage/ -R
 RUN composer install
+RUN php artisan swagger:generate
 
 FROM bitnami/php-fpm:8.1.1-prod
 COPY --from=pgsql_exts extensions/pdo_pgsql.so /opt/bitnami/php/lib/php/extensions/

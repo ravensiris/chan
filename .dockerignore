@@ -3,7 +3,6 @@
 Homestead.json
 Homestead.yaml
 .env
-storage
 Dockerfile*
 entrypoint.sh
 heroku.yml

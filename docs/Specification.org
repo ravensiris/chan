@@ -61,7 +61,7 @@ class Board {
 |------------+-----------+--------------------------------------+-------|
 | id         | uuid      | 1592fe29-bddb-4279-b47d-bb41e23a67a0 |       |
 | board_id   | uuid      | eb6f2aa2-b9a7-4239-a89c-8d2cef484dae |       |
-| op_id      | uuid      | c96ffb89-028a-4546-8f47-24b40ca00671 | todo  |
+| op_id      | uuid      | c96ffb89-028a-4546-8f47-24b40ca00671 |       |
 | created_at | timestamp | 2022-01-06T21:01:24.000000Z          |       |
 | updated_at | timestamp | 2022-01-06T21:01:24.000000Z          |       |
 
