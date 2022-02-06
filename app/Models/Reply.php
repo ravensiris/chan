@@ -37,6 +37,13 @@ use OpenApi\Attributes as OAT;
             type: 'string',
             example: 'I\'d just like to interject for moment. What you\'re refering to as Linux, is in fact, GNU/Linux, or as I\'ve recently taken to calling it, GNU plus Linux. Linux is not an operating system unto itself, but rather another free component of a fully functioning GNU system made useful by the GNU corelibs, shell utilities and vital system components comprising a full OS as defined by POSIX.',
         ),
+        new OAT\Property(
+            property: 'image',
+            description: 'whether to allocate an image to thread',
+            type: 'boolean',
+            example: 'false',
+            writeOnly: true
+        ),
     ]
 )]
 class Reply extends ModelUuid
