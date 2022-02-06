@@ -15,3 +15,6 @@ $router->group(['prefix' => 'boards'], function () use ($router) {
     $router->get('/{board_uuid}/threads/{thread_uuid}/replies/{uuid}', 'ReplyController@show');
     $router->get('/{uuid}', 'BoardController@show');
 });
+
+$router->get('/images/{uuid}', 'ImageController@show');
+$router->post('/images/{uuid}', 'ImageController@create');
