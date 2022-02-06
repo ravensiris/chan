@@ -188,14 +188,14 @@ class ReplyController extends Controller
             );
         }
 
-        $data = $request->all();
-        if ($data['image'] ?? false) {
-            // TODO: Return uuid pointing to an image table
-            // TODO: User can post image to that uuid
-        }
-
         $reply = $thread->replies()->create($request->only(['title', 'body']));
 
-        return $reply;
+        if ($data['image'] ?? false) {
+            $reply->image()->create();
+            $reply->save();
+        }
+        $reply->makeHidden(['created_at', 'updated_at']);
+
+        return response()->json($reply);
     }
 }

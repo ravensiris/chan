@@ -163,15 +163,16 @@ class ThreadController extends Controller
         }
 
         $data = $request->all();
-        if ($data['image'] ?? false) {
-            // TODO: Return uuid pointing to an image table
-            // TODO: User can post image to that uuid
-        }
 
         $thread = $board->threads()->create();
-        $thread->replies()->create($request->only(['title', 'body']));
+        $reply = $thread->replies()->create($request->only(['title', 'body']));
+        if ($data['image'] ?? false) {
+            $reply->image()->create();
+            $reply->save();
+        }
         $thread->refresh();
-        $thread->op;
+        $op = $thread->op;
+        $op->image->makeHidden(['created_at', 'updated_at']);
 
         return $thread;
     }
