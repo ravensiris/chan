@@ -46,4 +46,8 @@ class Reply extends ModelUuid
     {
         return $this->belongsTo(Thread::class);
     }
+    public function image()
+    {
+        return $this->hasOne(Image::class);
+    }
 }

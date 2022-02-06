@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\Thread;
+use App\Models\Reply;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRepliesTable extends Migration
+class CreateImagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,11 +14,11 @@ class CreateRepliesTable extends Migration
      */
     public function up()
     {
-        Schema::create('replies', function (Blueprint $table) {
+        Schema::create('images', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('thread_id')->foreign(Thread::class);
-            $table->string('title', 50);
-            $table->string('body', 500);
+            $table->uuid('reply_id')->foreign(Reply::class);
+            $table->text('mime')->nullable();
+            $table->binary('data')->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreateRepliesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('replies');
+        Schema::dropIfExists('images');
     }
 }
